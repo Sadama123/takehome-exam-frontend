@@ -25,32 +25,41 @@
 
 
 </template> -->
+
 <template>
   <v-card>
     <v-layout>
-      <v-navigation-drawer class="bg-deep-purple" theme="dark" permanent>
-        <v-img
-          src="https://cdn.dribbble.com/users/2057697/screenshots/11405073/media/7c71d0d51ef5a492c02043429bce5294.jpg"></v-img>
-        <v-list color="transparent">
-          <v-list-item title="Manage Products"></v-list-item>
+      <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
+        <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" title="John Leider" nav>
+          <template v-slot:append>
+            <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
+          </template>
+        </v-list-item>
 
+        <v-divider></v-divider>
+
+        <v-list density="compact" nav>
+          <!-- <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item> -->
+          <v-list-item prepend-icon="mdi-account" title="Manage Products" value="products"></v-list-item>
+          <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="Logout"></v-list-item>
         </v-list>
-
-        <template v-slot:append>
-          <div class="pa-2">
-            <v-btn block>
-              Logout
-            </v-btn>
-          </div>
-        </template>
       </v-navigation-drawer>
-      <v-main style="height: 100vh">
+      <v-main style="height: 250px">
         <v-container>
-          <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details
-            single-line></v-text-field>
+          <v-row>
+            <v-col cols="12">
+              <v-row no-gutters>
+                <v-col cols="2"></v-col>
+                <v-col cols="8">
+                  <v-data-table-virtual :headers="headers" :items="products" height="400"
+                    item-value="name"></v-data-table-virtual>
+                </v-col>
+                <v-col cols="2"></v-col>
+              </v-row>
 
+            </v-col>
+          </v-row>
 
-          <v-data-table :headers="headers" :items="products" :search="search"></v-data-table>
         </v-container>
       </v-main>
     </v-layout>
@@ -62,8 +71,7 @@ export default {
   data() {
     return {
       drawer: true,
-      rail: false,
-      search: '',
+      rail: true,
       headers: [
         { title: 'Product Code', align: 'start', key: 'productcode' },
         { title: 'Stocks', align: 'end', key: 'stocks' },
