@@ -1,30 +1,3 @@
-<!-- <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-row no-gutters>
-          <v-col cols="2"></v-col>
-          <v-col cols="8">
-            <v-data-table-virtual :headers="headers" :items="products" height="400"
-              item-value="name"></v-data-table-virtual>
-          </v-col>
-          <v-col cols="2"></v-col>
-        </v-row>
-
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col cols="4"></v-col>
-      <v-col cols="4">
-        <v-btn @click="signin">Login</v-btn>
-
-      </v-col>
-      <v-col cols="4"></v-col>
-    </v-row>
-  </v-container>
-
-
-</template> -->
 <template>
   <v-card>
     <v-layout>
@@ -38,19 +11,52 @@
 
         <template v-slot:append>
           <div class="pa-2">
-            <v-btn block>
+            <v-btn @click="logout" block>
               Logout
             </v-btn>
           </div>
         </template>
       </v-navigation-drawer>
-      <v-main style="height: 100vh">
+      <v-main style="height: 100vh; overflow: auto;">
         <v-container>
-          <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details
-            single-line></v-text-field>
+          <v-col cols="12">
+            <v-row no-gutters>
+              <v-col cols="6">
+                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined"
+                  hide-details single-line></v-text-field>
+              </v-col>
+              <v-col cols="6" style="padding-right: 2vw; padding-top: 2vh;">
+                <v-btn style="float: right;" v-if="!ifedit" @click="ifedit = !ifedit">Edit</v-btn>
+                <v-btn style="float: right;" v-else @click="ifedit = !ifedit">Save</v-btn>
 
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col cols="12">
+                <v-data-table :headers="headers" :items="products" :search="search">
+                  <template v-if="ifedit" v-slot:item.stocks="{ item }">
+                    <v-text-field style="width: 10vw;" label="Stocks" v-model="item.stocks"></v-text-field>
+                  </template>
+                  <template v-if="ifedit" v-slot:item.name="{ item }">
+                    <v-text-field style="width: 10vw;" label="Name" v-model="item.name"></v-text-field>
+                  </template>
+                  <template v-if="ifedit" v-slot:item.description="{ item }">
+                    <v-textarea style="width: 20vw;" label="Description" v-model="item.description"></v-textarea>
+                  </template>
+                  <template v-if="ifedit" v-slot:item.cost="{ item }">
+                    <v-text-field style="width: 5vw;" label="Cost" v-model="item.cost"></v-text-field>
+                  </template>
 
-          <v-data-table :headers="headers" :items="products" :search="search"></v-data-table>
+                  <template v-if="ifedit" v-slot:item.category="{ item }">
+                    <v-select label="Category" :items="category" v-model="item.category"></v-select>
+                  </template>
+                  <template v-if="ifedit" v-slot:item.sellingPrice="{ item }">
+                    <v-text-field style="width: 5vw;" label="Price" v-model="item.sellingPrice"></v-text-field>
+                  </template>
+                </v-data-table>
+              </v-col>
+            </v-row>
+          </v-col>
         </v-container>
       </v-main>
     </v-layout>
@@ -63,15 +69,23 @@ export default {
     return {
       drawer: true,
       rail: false,
+      ifedit: false,
       search: '',
+      category: [
+        "Condiments & Spices",
+        "Pasta, Rice & Cereal",
+        "Dairy",
+        "Vegetables",
+        "Meat"
+      ],
       headers: [
         { title: 'Product Code', align: 'start', key: 'productcode' },
-        { title: 'Stocks', align: 'end', key: 'stocks' },
-        { title: 'Name', align: 'end', key: 'name' },
+        { title: 'Stocks', align: 'center', key: 'stocks' },
+        { title: 'Name', align: 'center', key: 'name' },
         { title: 'Description', align: 'center', key: 'description' },
-        { title: 'Category', align: 'end', key: 'category' },
-        { title: 'Cost ($)', align: 'end', key: 'cost' },
-        { title: 'Selling Price ($)', align: 'end', key: 'sellingPrice' },
+        { title: 'Category', align: 'center', key: 'category' },
+        { title: 'Cost', align: 'center', key: 'cost' },
+        { title: 'Price', align: 'center', key: 'sellingPrice' },
       ],
       products: [
         {
@@ -249,7 +263,9 @@ export default {
     }
   },
   methods: {
-
+    logout() {
+      this.$router.push("/")
+    }
 
   }
 
